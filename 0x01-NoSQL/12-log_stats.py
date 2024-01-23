@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     print(f"{db.count_documents({})} logs")
     print("Methods:")
-    method = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     for method in methods:
         print(f"\tmethod {method}: {db.count_documents({'method': method})}")
     print(f"{db.count_documents({'method': 'GET', 'path': '/status'})} status check")
