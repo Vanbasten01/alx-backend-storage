@@ -22,16 +22,13 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
+    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
         """Retrieve data from Redis using a key and
         optionally apply a conversion function."""
-        """data = self._redis.get(key)
-        #if data and fn:
-        #    data = fn(data)
-        #return data"""
-        if fn:
-            return fn(self._redis.get(key))
-        return self._redis.get(key)
+        data = self._redis.get(key)
+        if data and fn:
+            data = fn(data)
+        return data
 
     def get_str(self, key: str) -> str:
         """Retrieve and decode a UTF-8 string from
