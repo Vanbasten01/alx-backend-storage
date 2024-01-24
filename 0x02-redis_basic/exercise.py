@@ -25,10 +25,10 @@ class Cache:
     def get(key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
         """Retrieve data from Redis using a key and
         optionally apply a conversion function."""
-        #data = self._redis.get(key)
+        """data = self._redis.get(key)
         #if data and fn:
         #    data = fn(data)
-        #return data
+        #return data"""
         if fn:
             return fn(self._redis.get(key))
         return self._redis.get(key)
@@ -36,8 +36,8 @@ class Cache:
     def get_str(self, key: str) -> str:
         """Retrieve and decode a UTF-8 string from
         Redis using the specified key."""
-        return str(self._redis.get(key)) #self.get(key, fn=lambda x: x.decode("utf-8"))
+        return self.get(key, fn=lambda x: x.decode("utf-8"))
 
     def get_int(self, key: str) -> int:
         """Retrieve an integer from Redis using the specified key."""
-        return int(self._redis.get(key)) #self.get(key, fn=int)
+        return self.get(key, fn=int)
