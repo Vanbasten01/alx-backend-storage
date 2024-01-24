@@ -2,6 +2,7 @@
 """ a Python script that provides some stats about
 Nginx logs stored in MongoDB"""
 from pymongo import MongoClient
+from collections import Counter
 
 
 if __name__ == "__main__":
@@ -15,13 +16,9 @@ if __name__ == "__main__":
         print(f"\tmethod {method}: {db.count_documents({'method': method})}")
     Get_count = db.count_documents({'method': 'GET', 'path': '/status'})
     print(f"{Get_count} status check")
+    
+    print("IPs:")
 
-    print('IPs:')
-    pipe = [
-            {'$group': {'_id': '$ip', 'count': {'$sum': 1}}},
-            {'$sort': {'count': -1}},
-            {'$limit': 10}
-    ]
-    popular = list(nginx_logs.aggregate(pipe))
-    for ip in popular:
-        print('\t{}: {}'.format(ip['_id'], ip['count']))
+    ip_counts = Counter(log['ip'] for log in db.find())
+    for ip, count in ip_counts.most_common(10):
+        print(f"\t{ip}: {count}")
