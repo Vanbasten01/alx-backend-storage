@@ -3,6 +3,20 @@
 from typing import Union, Optional, Callable, Any
 from uuid import uuid4
 import redis
+from functools import wraps
+
+def count_calls(method: Callable) -> Callable:
+    """Decorator to count the number of calls to a class method."""
+    key = method.__qualname__
+    
+    @wraps(method)
+    def wrapper(self, *args: Any, **kwargs: Any) -> Any:
+        """Wrapper function that increments a key in Redis for Cache.store"""
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+    return wrapper
+
+
 
 
 class Cache:
@@ -15,6 +29,7 @@ class Cache:
         # Flush the Redis database to start with an empty cache
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Store data in the cache with a randomly generated
             key and return the key."""
