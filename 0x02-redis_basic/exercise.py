@@ -5,16 +5,18 @@ from uuid import uuid4
 import redis
 from functools import wraps
 
+
 def count_calls(method: Callable) -> Callable:
     """Decorator to count the number of calls to a class method."""
     key = method.__qualname__
-    
+
     @wraps(method)
     def wrapper(self, *args: Any, **kwargs: Any) -> Any:
         """Wrapper function that increments a key in Redis for Cache.store"""
         self._redis.incr(key)
         return method(self, *args, **kwargs)
     return wrapper
+
 
 def call_history(method: Callable) -> Callable:
     """Decorator to track method calls and their inputs/outputs in Redis"""
@@ -32,8 +34,10 @@ def call_history(method: Callable) -> Callable:
 
     return wrapper
 
+
 def replay(method: Callable) -> None:
-    """function to display the history of calls of a particular function."""
+    """function to display the history of calls
+    of a particular function."""
     client = redis.Redis()
 
     in_key = method.__qualname__ + ":inputs"
@@ -50,6 +54,7 @@ def replay(method: Callable) -> None:
             method.__qualname__,
             value.decode("utf-8"),
             r_id.decode("utf-8")))
+
 
 class Cache:
     """Simple cache using Redis; initializes with an empty cache
