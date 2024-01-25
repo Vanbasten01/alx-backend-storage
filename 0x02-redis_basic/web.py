@@ -27,7 +27,7 @@ def cache_decorator(fn: Callable) -> Callable:
     return wrapper
 
 
-@wrap_requests
+@cache_decorator
 def get_page(url: str) -> str:
     """Obtain the HTML content of a particular URL and return it."""
     response = requests.get(url)
